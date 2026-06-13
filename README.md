@@ -38,7 +38,7 @@ Example MCP host config:
     "oms-client-agent": {
       "command": "pnpm",
       "args": ["--silent", "mcp"],
-      "cwd": "/Users/agruning/Documents/OMS Client Agent"
+      "cwd": "<directory>"
     }
   }
 }
