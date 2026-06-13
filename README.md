@@ -1,1 +1,59 @@
-# oms-mcp
+# OMS Client Agent MCP
+
+This project exposes the 0xSequence OMS wallet client as a local MCP server over stdio.
+
+## Configure
+
+Create a `.env` file or set these values in the MCP host environment:
+
+```bash
+OMS_PUBLISHABLE_KEY=...
+OMS_PROJECT_ID=...
+OMS_WALLET_EMAIL=...
+```
+
+Wallet session data, redirect auth state, and the Node credential signer key are stored in macOS Keychain under fixed `oms-client-agent-mcp:*` service names.
+
+## Run
+
+Build the local Keychain helper once:
+
+```bash
+pnpm build:keychain-helper
+```
+
+Then run the MCP server:
+
+```bash
+pnpm --silent mcp
+```
+
+The `check` and test scripts compile `src/storage/keychain-helper.swift` to `bin/keychain-helper` before running. The `mcp` script expects that binary to already exist so MCP stdout stays protocol-clean.
+
+Example MCP host config:
+
+```json
+{
+  "mcpServers": {
+    "oms-client-agent": {
+      "command": "pnpm",
+      "args": ["--silent", "mcp"],
+      "cwd": "/Users/agruning/Documents/OMS Client Agent"
+    }
+  }
+}
+```
+
+## Tools
+
+- `oms_env_status`: checks required environment keys without printing secrets.
+- `oms_session_status`: reports whether a wallet session is restored.
+- `oms_start_email_auth`: sends an email OTP.
+- `oms_complete_email_auth`: completes the OTP flow in the same server process.
+- `oms_sign_message`: signs a message with the active wallet session.
+- `oms_get_token_balances`: queries token balances through the OMS indexer.
+- `oms_get_native_token_balance`: queries the native token balance.
+- `oms_send_transaction`: passes JSON transaction params to `wallet.sendTransaction`.
+- `oms_sign_out`: clears the active wallet session.
+
+Default network is `amoy`. Pass a supported SDK network name such as `polygon`, `base`, or `sepolia` where tools accept `network`.

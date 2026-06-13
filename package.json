@@ -1,0 +1,20 @@
+{
+	"name": "oms-client-agent-mcp",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build:keychain-helper": "swiftc -suppress-warnings src/storage/keychain-helper.swift -o bin/keychain-helper",
+		"mcp": "node --import tsx src/mcp-server.ts",
+		"check": "pnpm --silent build:keychain-helper && node --import tsx -e \"import('./src/mcp-server.ts')\"",
+		"test": "pnpm --silent build:keychain-helper && node --import tsx --test tests/*.test.ts",
+		"test:keychain": "pnpm --silent build:keychain-helper && node --import tsx tests/keychain-smoke-test.ts"
+	},
+	"dependencies": {
+		"@0xsequence/typescript-sdk": "0.1.0-alpha.3",
+		"@modelcontextprotocol/sdk": "^1.29.0",
+		"dotenv": "^17.4.2",
+		"tsx": "^4.22.4",
+		"viem": "^2.52.2"
+	}
+}
