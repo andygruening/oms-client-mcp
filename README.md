@@ -17,7 +17,6 @@ Then fill in `.env`:
 ```bash
 OMS_PUBLISHABLE_KEY=...
 OMS_PROJECT_ID=...
-OMS_WALLET_EMAIL=...
 ```
 
 Wallet session data, redirect auth state, and the Node credential signer key are stored in macOS Keychain under fixed `oms-client-agent-mcp:*` service names.
@@ -56,7 +55,7 @@ Example MCP host config:
 
 - `oms_env_status`: checks required environment keys without printing secrets.
 - `oms_session_status`: reports whether a wallet session is restored.
-- `oms_start_email_auth`: sends an email OTP.
+- `oms_start_email_auth`: sends an email OTP to the email address provided in the tool call.
 - `oms_complete_email_auth`: completes the OTP flow in the same server process.
 - `oms_sign_message`: signs a message with the active wallet session.
 - `oms_get_token_balances`: queries token balances through the OMS indexer.

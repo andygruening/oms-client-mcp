@@ -60,9 +60,10 @@ export const tools: Tool[] = [
       properties: {
         email: {
           type: "string",
-          description: "Email address to receive the OTP. Defaults to OMS_WALLET_EMAIL.",
+          description: "Email address to receive the OTP.",
         },
       },
+      required: ["email"],
       additionalProperties: false,
     },
   },
@@ -257,7 +258,6 @@ export function envStatus(): Record<string, boolean> {
   return {
     OMS_PUBLISHABLE_KEY: hasEnv("OMS_PUBLISHABLE_KEY"),
     OMS_PROJECT_ID: hasEnv("OMS_PROJECT_ID"),
-    OMS_WALLET_EMAIL: hasEnv("OMS_WALLET_EMAIL"),
   };
 }
 
@@ -271,7 +271,7 @@ function sessionStatus(): unknown {
 }
 
 async function startEmailAuth(args: Record<string, unknown>): Promise<unknown> {
-  const email = optionalString(args.email, "email") ?? requiredEnv("OMS_WALLET_EMAIL");
+  const email = requiredString(args.email, "email");
   const oms = getOmsClient();
   await oms.wallet.startEmailAuth({ email });
 

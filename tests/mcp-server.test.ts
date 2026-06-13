@@ -35,11 +35,9 @@ test("oms_env_status reports booleans without exposing values", async () => {
   assert.deepEqual(Object.keys(result as Record<string, boolean>).sort(), [
     "OMS_PROJECT_ID",
     "OMS_PUBLISHABLE_KEY",
-    "OMS_WALLET_EMAIL",
   ]);
   assert.equal(typeof (result as Record<string, boolean>).OMS_PUBLISHABLE_KEY, "boolean");
   assert.equal(typeof (result as Record<string, boolean>).OMS_PROJECT_ID, "boolean");
-  assert.equal(typeof (result as Record<string, boolean>).OMS_WALLET_EMAIL, "boolean");
 });
 
 test("unknown tools fail before touching the OMS client", async () => {
@@ -58,6 +56,11 @@ test("argument validation fails before touching the OMS client", async () => {
   await assert.rejects(
     () => runTool("oms_complete_email_auth", { code: "" }),
     /code must be a non-empty string/,
+  );
+
+  await assert.rejects(
+    () => runTool("oms_start_email_auth", {}),
+    /email must be a non-empty string/,
   );
 
   await assert.rejects(

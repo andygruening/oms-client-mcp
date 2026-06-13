@@ -27,7 +27,6 @@ console.log("Fill in .env with your OMS values:");
 console.log("");
 console.log("  OMS_PUBLISHABLE_KEY=...");
 console.log("  OMS_PROJECT_ID=...");
-console.log("  OMS_WALLET_EMAIL=...");
 console.log("");
 console.log("Codex MCP config:");
 console.log("");
