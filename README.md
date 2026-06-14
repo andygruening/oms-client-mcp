@@ -2,6 +2,16 @@
 
 This project exposes the OMS client as a local MCP server over stdio.
 
+## How it works
+
+The MCP host starts this server as a local stdio process. The agent calls the exposed MCP tools, and the server translates those tool calls into OMS Wallet SDK calls.
+
+Email sign-in is a two-step flow: `oms_start_email_auth` sends the OTP to the email address from the user prompt, then `oms_complete_email_auth` completes the auth attempt with the OTP code. Those two calls need to run in the same server process.
+
+After sign-in, wallet session metadata and the credential signer key are persisted in the platform secure store. That lets a later MCP process restore the wallet session and sign messages or transactions without exposing secrets to the agent.
+
+Token transfers are intentionally narrow. ERC20 transfers use `wallet.callContract` with `transfer(address,uint256)`, and native token transfers use `wallet.sendTransaction` with only `to` and `value` fields.
+
 ## Configure
 
 Run setup:
@@ -22,6 +32,33 @@ OMS_PROJECT_ID=...
 Wallet session data, redirect auth state, and the Node credential signer key are stored in macOS Keychain under fixed `oms-client-agent-mcp:*` service names.
 
 On Linux, the same values are stored through Freedesktop Secret Service using `secret-tool`. Install `libsecret-tools` and ensure a Secret Service provider such as GNOME Keyring or KWallet is available and unlocked.
+
+## Example Prompts
+
+### Sign in
+
+```text
+Sign in using your@email.com
+```
+
+Wait for response, then enter OTP code:
+
+```text
+123456
+```
+
+### Send USDC
+
+```text
+Send 1 USDC to 0xB54d0b73a40f5b9a243D142EeDDA39Bb5ed76B50
+```
+
+### Get token balances
+
+```text
+Check the usdc balance for the local wallet address on amoy:
+USDC address: 0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582
+```
 
 ## Run
 
@@ -69,30 +106,3 @@ Example MCP host config:
 Default network is `amoy`. Pass a supported SDK network name such as `polygon`, `base`, or `sepolia` where tools accept `network`.
 
 Transfer tools accept raw integer amounts: `amountRaw` for ERC20 base units and `amountWei` for native token wei.
-
-## Example Prompts
-
-### Sign in
-
-```text
-Sign in using your@email.com
-```
-
-Wait for response, then enter OTP code:
-
-```text
-123456
-```
-
-### Send USDC
-
-```text
-Send 1 USDC to 0xB54d0b73a40f5b9a243D142EeDDA39Bb5ed76B50
-```
-
-### Get token balances
-
-```text
-Check the usdc balance for the local wallet address on amoy:
-USDC address: 0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582
-```
